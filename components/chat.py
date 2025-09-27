@@ -71,15 +71,16 @@ class ChatComponent:
 		# Input form stuck to bottom of column
 		st.markdown("<div class='chat-input-container'>", unsafe_allow_html=True)
 		with st.form(key="chat_form", clear_on_submit=True):
-			prompt = st.text_input("Message", placeholder="Ask Rhino/Grasshopper...")
+			prompt = st.text_input("Message", placeholder="Ask GPT to analyze structures or compute with Grasshopper...")
 			submitted = st.form_submit_button("Send", use_container_width=True)
 		st.markdown("</div>", unsafe_allow_html=True)
 
 		if submitted and prompt.strip():
 			self.append("user", prompt.strip())
-			response = self.client.send_message(prompt.strip())
+			# Pass conversation history for better context
+			response = self.client.send_message(prompt.strip(), conversation_history=self.history[:-1])  # Exclude the just-added user message
 			self.append("assistant", response)
-			st.experimental_rerun()
+			st.rerun()
 
 		st.markdown("</div>", unsafe_allow_html=True)  # close chat-pane
 		return uploaded_bytes

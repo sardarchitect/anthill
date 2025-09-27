@@ -46,7 +46,8 @@
         "castShadow": true,
         "receiveShadow": false,
         "doubleSided": true,
-        "embodiedCarbon": 100
+        "embodiedCarbon": 100,
+        "structural_type": "Beam"
       }
     },
     {
@@ -81,7 +82,8 @@
         "castShadow": true,
         "receiveShadow": false,
         "doubleSided": true,
-        "embodiedCarbon": 400
+        "embodiedCarbon": 400,
+        "structural_type": "Floor"
       }
     }
   ],

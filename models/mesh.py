@@ -41,6 +41,7 @@ class MeshGeometry:
 	faces: List[Tuple[int, int, int]]
 	meta: Dict[str, str] = field(default_factory=dict)
 	embodied_carbon: float | None = None  # kgCO2e (per mesh aggregate)
+	structural_type: str = None  # e.g., "Beam", "Floor", etc.
 
 	def vertex_count(self) -> int:
 		return len(self.vertices)
@@ -96,6 +97,7 @@ class MeshScene:
 					"min_z": minz,
 					"max_z": maxz,
 					"embodied_carbon": m.embodied_carbon,
+					"structural_type": m.structural_type
 				}
 			)
 		return rows

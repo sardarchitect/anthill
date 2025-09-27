@@ -66,6 +66,11 @@ def parse_scene(data: Dict[str, Any]) -> MeshScene:
 			carbon_val = float(carbon) if carbon is not None else None
 		except (TypeError, ValueError):
 			carbon_val = None
+		
+		try:
+			structuralType = str(dataset.get("structural_type")) if dataset.get("structural_type") is not None else None
+		except (TypeError, ValueError):
+			structuralType = None
 
 		meshes.append(
 			MeshGeometry(
@@ -74,6 +79,7 @@ def parse_scene(data: Dict[str, Any]) -> MeshScene:
 				faces=faces,
 				meta={"uuid": uuid or "", "vertex_count": str(len(vertices))},
 				embodied_carbon=carbon_val,
+				structural_type=structuralType
 			)
 		)
 
