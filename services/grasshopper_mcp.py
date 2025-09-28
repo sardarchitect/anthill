@@ -45,21 +45,25 @@ class DirectGrasshopperClient:
             {
                 "type": "function",
                 "function": {
-                    "name": "add_numbers_via_compute",
-                    "description": "Add two numbers using a Grasshopper definition on Rhino Compute. This demonstrates computational geometry capabilities.",
+                    "name": "calculateBuildingEmbodiedCarbon",
+                    "description": "Calculate embodied carbon of a building given bay width, bay height, and story height",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "num1": {
+                            "xBaySize": {
                                 "type": "number",
-                                "description": "First number to add"
+                                "description": "Bay width in X direction"
                             },
-                            "num2": {
+                            "yBaySize": {
                                 "type": "number", 
-                                "description": "Second number to add"
+                                "description": "Bay width in Y direction"
+                            },
+                            "storyHeight": {
+                                "type": "number", 
+                                "description": "story height"
                             }
                         },
-                        "required": ["num1", "num2"]
+                        "required": ["xBaySize", "yBaySize", "storyHeight"]
                     }
                 }
             }
@@ -72,15 +76,16 @@ class DirectGrasshopperClient:
         if not self.available:
             raise RuntimeError("Grasshopper compute module not available")
         
-        if tool_name == "add_numbers_via_compute":
+        if tool_name == "calculateBuildingEmbodiedCarbon":
             try:
-                num1 = float(arguments.get("num1", 0))
-                num2 = float(arguments.get("num2", 0))
+                xBaySize = float(arguments.get("xBaySize", 0))
+                yBaySize = float(arguments.get("yBaySize", 0))
+                storyHeight = float(arguments.get("storyHeight", 0))
                 
                 # Call the compute function directly
-                result = self.compute_module.call_compute(num1, num2)
-                
-                return f"Grasshopper computation result: {num1} + {num2} = {result}"
+                result = self.compute_module.call_compute(xBaySize, yBaySize, storyHeight)
+                print(result)
+                return f"Grasshopper computation result: {result}"
                 
             except Exception as e:
                 raise RuntimeError(f"Error calling Grasshopper compute: {str(e)}")

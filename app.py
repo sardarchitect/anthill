@@ -42,7 +42,6 @@ def load_scene_safe(path: Path):
 def main():
 	# Load environment variables
 	load_dotenv()
-
 	with st.sidebar:
 		st.header("🔑 Configuration")
 		

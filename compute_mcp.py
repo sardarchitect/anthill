@@ -2,36 +2,44 @@ import base64
 import requests
 from mcp.server.fastmcp import FastMCP
 
-mcp = FastMCP("AddTwoNumbersCompute")
+mcp = FastMCP("EmbodiedCarbonBuildingCalculator")
 
 # Path to your Grasshopper definition
-GH_PATH = "D:/Source/anthill/grasshopper/AddTwoNumbers.gh"
-COMPUTE_URL = "http://localhost:5000/grasshopper"
+GH_PATH = r"C:\Users\sxmoore\Source\Hackathon\AntHill\BOX_Building Frame.gh"
+COMPUTE_URL = "http://localhost:8081/grasshopper"
 
 # Read and base64 encode GH definition once at startup
 with open(GH_PATH, "rb") as f:
     gh_bytes = f.read()
 encoded_def = base64.b64encode(gh_bytes).decode("utf-8")
 
-def call_compute(num1: float, num2: float):
-    """Send request to Rhino Compute with num1 and num2 inputs"""
+def call_compute(xBaySize: float, yBaySize: float, storyHeight: float):
+    """Send request to Rhino Compute with with X bay size, Y bay size, and story height"""
     payload = {
         "algo": encoded_def,
         "pointer": None,
         "values": [
             {
-                "ParamName": "num1",
+                "ParamName": "xBaySize",
                 "InnerTree": {
                     "{0}": [
-                        {"type": "System.Double", "data": str(num1)}
+                        {"type": "System.Double", "data": str(xBaySize)}
                     ]
                 }
             },
             {
-                "ParamName": "num2",
+                "ParamName": "yBaySize",
                 "InnerTree": {
                     "{0}": [
-                        {"type": "System.Double", "data": str(num2)}
+                        {"type": "System.Double", "data": str(yBaySize)}
+                    ]
+                }
+            },
+            {
+                "ParamName": "storyHeight",
+                "InnerTree": {
+                    "{0}": [
+                        {"type": "System.Double", "data": str(storyHeight)}
                     ]
                 }
             }
@@ -45,28 +53,48 @@ def call_compute(num1: float, num2: float):
     num = float(data.strip('"'))
     return num
 
+def parse_point(s: str):
+    """Convert '{x, y, z}' string into a tuple of floats."""
+    return tuple(float(v) for v in s.strip("{}").split(","))
+
 @mcp.tool()
-async def add_numbers_via_compute(
-    num1: int | float,
-    num2: int | float
-) -> float:
-    """Add two numbers using a Grasshopper definition on Rhino Compute.
-    
+async def calculateBuildingEmbodiedCarbon(
+    xBaySize: int | float,
+    yBaySize: int | float,
+    storyHeight: int | float
+) -> dict:
+    """Run embodied carbon analysis using Rhino Compute Grasshopper definition.
+
     Args:
-        num1: First number.
-        num2: Second number.
+        xBaySize: The bay size in the X direction.
+        yBaySize: The bay size in the Y direction.
+        storyHeight: The story height of the frame.
+
+    Returns:
+        A dictionary containing the StructuralFrame and total carbon emission.
     """
-    result = call_compute(num1, num2)
+    result = call_compute(xBaySize, yBaySize, storyHeight)
 
     # Extract Grasshopper output values
     try:
-        gh_values = result.get("values", [])
-        # usually the computed value is in values[0]["InnerTree"]["{0}"][0]["data"]
-        sum_val = gh_values[0]["InnerTree"]["{0}"][0]["data"]
-        return float(sum_val)
-    except Exception:
-        # fallback: return raw response
-        return result
+        beams = result["StructuralFrame"]["BeamSystem"]
+
+        # Sum up emissions
+        total_emission = sum(float(b["CarbonEmmision"]) for b in beams)
+
+        # Parse points into tuples for easier querying
+        for b in beams:
+            b["CarbonEmmision"] = float(b["CarbonEmmision"])
+            b["PointStart"] = parse_point(b["PointStart"])
+            b["PointEnd"] = parse_point(b["PointEnd"])
+
+        return {
+            "totalCarbonEmission": total_emission,
+            "beamCount": len(beams),
+            "beams": beams
+        }
+    except Exception as e:
+        return {"error": str(e), "rawResult": result}
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
