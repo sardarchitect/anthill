@@ -132,27 +132,61 @@ class MeshScene:
 
         def process_structural_elements(system_data, element_type):
             """Generic processor for structural elements (beams/columns/slabs)"""
+            print(f"\nProcessing {element_type} elements...")
+            print(f"Input system_data type: {type(system_data)}")
+            if isinstance(system_data, (list, dict)):
+                print(f"System data content: {json.dumps(system_data, indent=2)}")
+            
             elements = []
-            if isinstance(system_data, list):
+            # For slabs, handle the special case where the system is an array with metrics object first
+            if element_type == "Slab" and isinstance(system_data, list):
                 for item in system_data:
                     if isinstance(item, list):
-                        elements.extend(item)
-                    elif isinstance(item, dict) and ("PointStart" in item or "Point1" in item):
-                        elements.append(item)
+                        for slab in item:  # Process individual slabs in the nested list
+                            if isinstance(slab, dict) and all(f"Point{i}" in slab for i in range(1, 5)):
+                                elements.append(slab)
+            # For beams and columns, handle the single level of nesting
+            elif isinstance(system_data, list):
+                for item in system_data:
+                    if isinstance(item, list):
+                        elements.extend(item)  # Main element array
+                    elif isinstance(item, dict):
+                        # Skip metrics objects (those without geometric points)
+                        if any(key.startswith("Point") for key in item.keys()):
+                            elements.append(item)
+            print(f"Found {len(elements)} {element_type} elements")
             return elements
 
         # Process StructuralFrame data if present
+        print("\nProcessing structural frame data...")
         frame_data = data
         if isinstance(data, dict) and "StructuralFrame" in data:
+            print("Found StructuralFrame key in data")
+            print(f"StructuralFrame full content: {json.dumps(data['StructuralFrame'], indent=2)}")
+            frame_data = {}  # Create a combined frame data dictionary
             if isinstance(data["StructuralFrame"], list):
+                print("StructuralFrame is a list, processing all dict items...")
                 for item in data["StructuralFrame"]:
+                    print(f"Examining item type: {type(item)}")
                     if isinstance(item, dict):
-                        frame_data = item
-                        break
+                        print(f"Found dictionary item with keys: {list(item.keys())}")
+                        # Combine all systems into one dictionary
+                        if "BeamSystem" in item:
+                            print("Found BeamSystem")
+                            frame_data["BeamSystem"] = item["BeamSystem"]
+                        if "ColumnSystem" in item:
+                            print("Found ColumnSystem")
+                            frame_data["ColumnSystem"] = item["ColumnSystem"]
+                        if "SlabSystem" in item:
+                            print("Found SlabSystem")
+                            frame_data["SlabSystem"] = item["SlabSystem"]
             else:
                 frame_data = data["StructuralFrame"]
-
-        # Process beams
+                print(f"StructuralFrame is not a list. Type: {type(frame_data)}")
+                if isinstance(frame_data, dict):
+                    print(f"Frame data keys: {list(frame_data.keys())}")
+        else:
+            print("No StructuralFrame key found in data")        # Process beams
         if isinstance(frame_data, dict) and "BeamSystem" in frame_data:
             beam_system = process_structural_elements(frame_data["BeamSystem"], "Beam")
             for beam_data in beam_system:
@@ -183,25 +217,28 @@ class MeshScene:
                 except Exception as e:
                     print(f"Error processing beam: {e}")
 
-        # Process columns
+        # Process columns - these should be vertical segments
+        print("\nProcessing column system...")
         if isinstance(frame_data, dict) and "ColumnSystem" in frame_data:
+            print(f"Found ColumnSystem in frame_data")
             column_system = process_structural_elements(frame_data["ColumnSystem"], "Column")
             for column_data in column_system:
                 if not isinstance(column_data, dict):
+                    print(f"Skipping non-dict column data: {type(column_data)}")
                     continue
                 try:
-                    # Parse points
-                    start = Vertex(*parse_point(column_data.get("PointStart", "0,0,0")))
-                    end = Vertex(*parse_point(column_data.get("PointEnd", "0,0,0")))
+                    # Parse points - columns use PointStart/PointEnd like beams
+                    if "PointStart" not in column_data or "PointEnd" not in column_data:
+                        print(f"Missing start/end points in column. Keys: {list(column_data.keys())}")
+                        continue
+                        
+                    start = Vertex(*parse_point(column_data["PointStart"]))
+                    end = Vertex(*parse_point(column_data["PointEnd"]))
                     
                     # Parse carbon
-                    carbon = 0.0
-                    try:
-                        carbon = float(column_data.get("CarbonEmission", 0))
-                    except (ValueError, TypeError):
-                        pass
+                    carbon = float(column_data.get("CarbonEmission", "0"))
 
-                    # Create column
+                    # Create column using the beam geometry (since columns are vertical lines)
                     column = ColumnGeometry(
                         name=str(column_data.get("Name", "Column")),
                         start_point=start,
@@ -210,24 +247,40 @@ class MeshScene:
                         structural_type="Column"
                     )
                     scene.columns.append(column)
-                    print(f"Added column: {column}")
+                    print(f"Added column: {column.name} from {start.z} to {end.z}")
                 except Exception as e:
                     print(f"Error processing column: {e}")
 
         # Process slabs
+        print("\nProcessing slab system...")
         if isinstance(frame_data, dict) and "SlabSystem" in frame_data:
+            print(f"Found SlabSystem in frame_data")
             slab_system = process_structural_elements(frame_data["SlabSystem"], "Slab")
             for slab_data in slab_system:
                 if not isinstance(slab_data, dict):
+                    print(f"Skipping non-dict slab data: {type(slab_data)}")
                     continue
                 try:
-                    # For slabs, we expect multiple corner points
+                    # For slabs, we expect four corner points numbered 1-4
                     corner_points = []
-                    for i in range(4):  # Assuming rectangular slabs
-                        point_key = f"Point{i+1}"
-                        if point_key in slab_data:
-                            corner = Vertex(*parse_point(slab_data[point_key]))
-                            corner_points.append(corner)
+                    missing_points = False
+                    
+                    # Check for all four points first
+                    for i in range(1, 5):
+                        point_key = f"Point{i}"
+                        if point_key not in slab_data:
+                            print(f"Missing {point_key} in slab. Keys: {list(slab_data.keys())}")
+                            missing_points = True
+                            break
+                    
+                    if missing_points:
+                        continue
+                        
+                    # Now parse all points since we know they exist
+                    for i in range(1, 5):
+                        point_key = f"Point{i}"
+                        corner = Vertex(*parse_point(slab_data[point_key]))
+                        corner_points.append(corner)
 
                     if corner_points:
                         carbon = 0.0

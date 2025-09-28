@@ -100,11 +100,8 @@ async def calculateBuildingEmbodiedCarbon(
     # Extract Grasshopper output values
     try:
         print('result', result)
-        totalC02 = result["StructuralFrame"]["TotalCO2"]
-
-        return {
-            "totalCarbonEmission": totalC02,
-        }
+        # Return the full structure for visualization
+        return result
     except Exception as e:
         return {"error": str(e), "rawResult": result}
 
