@@ -17,6 +17,9 @@ st.set_page_config(page_title="Anthill", layout="wide")
 st.title("Anthill Prototype")
 st.caption("Structural embodied carbon analysis for massing models.")
 
+if "buildingJSON" not in st.session_state:
+	st.session_state.buidlingJSON = None
+
 
 def get_default_json_path() -> Optional[Path]:
 	candidate = Path(__file__).parent / "Test 01.json"
@@ -32,17 +35,55 @@ def parse_uploaded_bytes(data: bytes) -> Optional[Path]:
 	return tmp_file
 
 
-def load_scene_safe(path: Path):
+def load_scene_safe(data):
+	"""Load a scene from a file path, JSON string, or dictionary.
+
+	Args:
+		data: Can be:
+			- Path object pointing to a JSON file
+			- Dictionary containing the scene data
+			- String containing JSON data
+
+	Returns:
+		The loaded scene, or None if loading failed
+	"""
 	try:
-		return load_scene(path)
+		if isinstance(data, Path):
+			# If data is a file path, use the original load_scene function
+			return load_scene(data)
+		elif isinstance(data, dict):
+			# If data is a dictionary, parse it directly
+			from models.mesh import MeshScene
+			return MeshScene.from_dict(data)
+		elif isinstance(data, str):
+			# If data is a string, try to parse it as JSON
+			try:
+				json_data = json.loads(data)
+				from models.mesh import MeshScene
+				return MeshScene.from_dict(json_data)
+			except json.JSONDecodeError as e:
+				st.error(f"Invalid JSON string: {str(e)}")
+				return None
+		else:
+			st.error(f"Invalid input type for load_scene_safe: {type(data)}")
+			return None
 	except MeshParseError as e:
 		st.error(f"Failed to parse mesh JSON: {e}")
 		return None
+	except Exception as e:
+		st.error(f"Error loading scene: {str(e)}")
+		return None
 
+
+# Global variable to store the building JSON
+buildingJSON = None
 
 def main():
 	# Load environment variables
 	load_dotenv()
+	# Initialize global buildingJSON in session state if not exists
+	if 'buildingJSON' not in st.session_state:
+		st.session_state['buildingJSON'] = None
 	with st.sidebar:
 		st.header("🔑 Configuration")
 		
@@ -105,16 +146,23 @@ def main():
 
 	scene = None
 	active_source = None
-	if uploaded_bytes:
-		path = parse_uploaded_bytes(uploaded_bytes)
-		if path:
-			scene = load_scene_safe(path)
-			active_source = "Uploaded file"
-	if scene is None:
-		default_path = get_default_json_path()
-		if default_path:
-			scene = load_scene_safe(default_path)
-			active_source = "Default sample"
+
+	# Check if buildingJSON is set from compute_mcp
+	jsonInfo = st.session_state.get('buildingJSON')
+	if jsonInfo is not None:
+		active_source = "Computed Result"
+		scene = load_scene_safe(jsonInfo)
+	
+	# if uploaded_bytes:
+	# 	path = parse_uploaded_bytes(uploaded_bytes)
+	# 	if path:
+	# 		scene = load_scene_safe(path)
+	# 		active_source = "Uploaded file"
+	# if scene is None:
+	# 	default_path = get_default_json_path()
+	# 	if default_path:
+	# 		scene = load_scene_safe(default_path)
+	# 		active_source = "Default sample"
 
 	with col_view:
 		st.subheader("3D Visualization & Analytics")
@@ -127,7 +175,7 @@ def main():
 		st.plotly_chart(fig, use_container_width=True)
 		if viewer.carbon_coloring_active:
 			st.caption("Color scale: Embodied carbon (green = low, red = high)")
-
+		print('scene', scene)
 		charts = ChartsBuilder(scene)
 		if any(r.get("embodied_carbon") for r in scene.summary()):
 			# Main classifier function for consistency across all charts

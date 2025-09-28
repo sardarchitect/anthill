@@ -1,6 +1,7 @@
 import base64
 import requests
 from mcp.server.fastmcp import FastMCP
+import streamlit as st
 import json
 
 mcp = FastMCP("EmbodiedCarbonBuildingCalculator")
@@ -48,13 +49,31 @@ def call_compute(xBaySize: float, yBaySize: float, storyHeight: float):
         ]
     }
     response = requests.post(COMPUTE_URL, json=payload)
-    print('response', response)
     res = response.json()
     data = res["values"][0]["InnerTree"]["{0}"][0]["data"]
-    print('data', data)
-    parsed = json.loads(data)
-    print('parsed', parsed)
-    return parsed
+    print("Raw response data:")
+    print(data)
+    try:
+        parsed = json.loads(data)
+        print("\nFull Grasshopper data structure:")
+        print(json.dumps(parsed, indent=2))
+        print("\nStructure analysis:")
+        if isinstance(parsed, dict):
+            def analyze_structure(d, prefix=""):
+                for key, value in d.items():
+                    if isinstance(value, dict):
+                        print(f"{prefix}Dict key: {key}")
+                        analyze_structure(value, prefix + "  ")
+                    elif isinstance(value, list):
+                        print(f"{prefix}List key: {key} (length: {len(value)})")
+                        if value and isinstance(value[0], dict):
+                            print(f"{prefix}  First item keys: {list(value[0].keys())}")
+            analyze_structure(parsed)
+        st.session_state.buildingJSON = parsed
+        return parsed
+    except json.JSONDecodeError as e:
+        print("Error parsing JSON:", e)
+        return None
 
 def parse_point(s: str):
     """Convert '{x, y, z}' string into a tuple of floats."""
