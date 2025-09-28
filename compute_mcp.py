@@ -5,8 +5,8 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP("EmbodiedCarbonBuildingCalculator")
 
 # Path to your Grasshopper definition
-GH_PATH = r"C:\Users\sxmoore\Source\Hackathon\AntHill\BOX_Building Frame.gh"
-COMPUTE_URL = "http://localhost:8081/grasshopper"
+GH_PATH ="D:/Source/anthill/grasshopper/BOX_Building Frame.gh"
+COMPUTE_URL = "http://localhost:5000/grasshopper"
 
 # Read and base64 encode GH definition once at startup
 with open(GH_PATH, "rb") as f:

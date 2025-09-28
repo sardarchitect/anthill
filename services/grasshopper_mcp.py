@@ -41,31 +41,36 @@ class DirectGrasshopperClient:
             return []
         
         # Define the add_numbers_via_compute function for OpenAI
+        function_schema = {
+            "description": "Calculate embodied carbon of a building given bay width, bay height, and story height",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "xBaySize": {
+                        "type": "number",
+                        "description": "Bay width in X direction"
+                    },
+                    "yBaySize": {
+                        "type": "number",
+                        "description": "Bay width in Y direction"
+                    },
+                    "storyHeight": {
+                        "type": "number",
+                        "description": "story height"
+                    }
+                },
+                "required": ["xBaySize", "yBaySize", "storyHeight"]
+            }
+        }
+
         tools = [
             {
                 "type": "function",
-                "function": {
-                    "name": "calculateBuildingEmbodiedCarbon",
-                    "description": "Calculate embodied carbon of a building given bay width, bay height, and story height",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "xBaySize": {
-                                "type": "number",
-                                "description": "Bay width in X direction"
-                            },
-                            "yBaySize": {
-                                "type": "number", 
-                                "description": "Bay width in Y direction"
-                            },
-                            "storyHeight": {
-                                "type": "number", 
-                                "description": "story height"
-                            }
-                        },
-                        "required": ["xBaySize", "yBaySize", "storyHeight"]
-                    }
-                }
+                "function": {"name": "calculateBuildingEmbodiedCarbon", **function_schema}
+            },
+            {
+                "type": "function",
+                "function": {"name": "compute_mcp", **function_schema}
             }
         ]
         
@@ -76,7 +81,7 @@ class DirectGrasshopperClient:
         if not self.available:
             raise RuntimeError("Grasshopper compute module not available")
         
-        if tool_name == "calculateBuildingEmbodiedCarbon":
+        if tool_name in {"calculateBuildingEmbodiedCarbon", "compute_mcp"}:
             try:
                 xBaySize = float(arguments.get("xBaySize", 0))
                 yBaySize = float(arguments.get("yBaySize", 0))
