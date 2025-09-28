@@ -158,6 +158,7 @@ class MCPClient:
                 try:
                     # Call the MCP tool
                     result = self.grasshopper_client.call_tool(function_name, arguments)
+                    print('result', result)
                     
                     # Add tool result to messages
                     messages.append({

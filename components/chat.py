@@ -79,7 +79,6 @@ class ChatComponent:
 			self.append("user", prompt.strip())
 			# Pass conversation history for better context
 			response = self.client.send_message(prompt.strip(), conversation_history=self.history[:-1])  # Exclude the just-added user message
-			print('response', response)
 			self.append("assistant", response)
 			st.rerun()
 

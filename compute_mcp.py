@@ -1,12 +1,13 @@
 import base64
 import requests
 from mcp.server.fastmcp import FastMCP
+import json
 
 mcp = FastMCP("EmbodiedCarbonBuildingCalculator")
 
 # Path to your Grasshopper definition
-GH_PATH ="D:/Source/anthill/grasshopper/BOX_Building Frame.gh"
-COMPUTE_URL = "http://localhost:5000/grasshopper"
+GH_PATH = r"C:\Users\sxmoore\Source\Hackathon\AntHill\Streamlit\anthill\grasshopper\antHill_Building Frame.gh"
+COMPUTE_URL = "http://localhost:8081/grasshopper"
 
 # Read and base64 encode GH definition once at startup
 with open(GH_PATH, "rb") as f:
@@ -14,6 +15,7 @@ with open(GH_PATH, "rb") as f:
 encoded_def = base64.b64encode(gh_bytes).decode("utf-8")
 
 def call_compute(xBaySize: float, yBaySize: float, storyHeight: float):
+    print('calling compute')
     """Send request to Rhino Compute with with X bay size, Y bay size, and story height"""
     payload = {
         "algo": encoded_def,
@@ -45,13 +47,14 @@ def call_compute(xBaySize: float, yBaySize: float, storyHeight: float):
             }
         ]
     }
-
-    res = requests.post(COMPUTE_URL, json=payload)
-    res.raise_for_status()
-    response = res.json()
-    data = response["values"][0]["InnerTree"]["{0}"][0]["data"]
-    num = float(data.strip('"'))
-    return num
+    response = requests.post(COMPUTE_URL, json=payload)
+    print('response', response)
+    res = response.json()
+    data = res["values"][0]["InnerTree"]["{0}"][0]["data"]
+    print('data', data)
+    parsed = json.loads(data)
+    print('parsed', parsed)
+    return parsed
 
 def parse_point(s: str):
     """Convert '{x, y, z}' string into a tuple of floats."""
@@ -77,21 +80,11 @@ async def calculateBuildingEmbodiedCarbon(
 
     # Extract Grasshopper output values
     try:
-        beams = result["StructuralFrame"]["BeamSystem"]
-
-        # Sum up emissions
-        total_emission = sum(float(b["CarbonEmmision"]) for b in beams)
-
-        # Parse points into tuples for easier querying
-        for b in beams:
-            b["CarbonEmmision"] = float(b["CarbonEmmision"])
-            b["PointStart"] = parse_point(b["PointStart"])
-            b["PointEnd"] = parse_point(b["PointEnd"])
+        print('result', result)
+        totalC02 = result["StructuralFrame"]["TotalCO2"]
 
         return {
-            "totalCarbonEmission": total_emission,
-            "beamCount": len(beams),
-            "beams": beams
+            "totalCarbonEmission": totalC02,
         }
     except Exception as e:
         return {"error": str(e), "rawResult": result}
