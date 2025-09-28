@@ -7,6 +7,7 @@ server for computational tools.
 
 import openai
 import json
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 import streamlit as st
 from .grasshopper_mcp import DirectGrasshopperClient
@@ -159,12 +160,16 @@ class MCPClient:
                     # Call the MCP tool
                     result = self.grasshopper_client.call_tool(function_name, arguments)
                     print('result', result)
-                    
+
+                    # Persist scene output for visualization if available
+                    self._register_scene_result(result)
+
                     # Add tool result to messages
+                    tool_content = self._format_tool_content(result)
                     messages.append({
                         "role": "tool",
                         "tool_call_id": tool_call.id,
-                        "content": str(result)
+                        "content": tool_content
                     })
                     
                 except Exception as e:
@@ -195,3 +200,42 @@ class MCPClient:
         self._connected = False
         if api_key:
             self.connect()
+
+    def _register_scene_result(self, result: Any) -> None:
+        if not isinstance(result, dict):
+            return
+
+        scene_data = None
+        if isinstance(result.get("scene"), (dict, list)):
+            scene_data = result["scene"]
+        elif "StructuralFrame" in result:
+            scene_data = {"StructuralFrame": result["StructuralFrame"]}
+
+        if scene_data is None:
+            return
+
+        cache_dir = Path(".cache")
+        cache_dir.mkdir(exist_ok=True)
+        scene_path = cache_dir / "compute_scene.json"
+        try:
+            scene_path.write_text(json.dumps(scene_data, indent=2), encoding="utf-8")
+        except TypeError:
+            # Fallback to serializer that converts unsupported types to strings
+            scene_path.write_text(
+                json.dumps(scene_data, indent=2, default=str),
+                encoding="utf-8",
+            )
+
+        st.session_state["generated_scene_path"] = str(scene_path)
+        st.session_state["generated_scene_label"] = "Grasshopper MCP"
+        if "totalCarbonEmission" in result:
+            st.session_state["generated_scene_total"] = result["totalCarbonEmission"]
+        st.session_state["scene_ready"] = True
+
+    def _format_tool_content(self, result: Any) -> str:
+        if isinstance(result, (dict, list)):
+            try:
+                return json.dumps(result, indent=2)
+            except TypeError:
+                return json.dumps(result, default=str)
+        return str(result)

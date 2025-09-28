@@ -103,25 +103,37 @@ def main():
 	with col_chat:
 		uploaded_bytes = chat_component.render()
 
+	st.session_state.setdefault("scene_ready", False)
 	scene = None
 	active_source = None
+	display_total_carbon = None
+
 	if uploaded_bytes:
 		path = parse_uploaded_bytes(uploaded_bytes)
 		if path:
-			scene = load_scene_safe(path)
-			active_source = "Uploaded file"
-	if scene is None:
-		default_path = get_default_json_path()
-		if default_path:
-			scene = load_scene_safe(default_path)
-			active_source = "Default sample"
+			st.session_state["generated_scene_path"] = str(path)
+			st.session_state["generated_scene_label"] = "Uploaded file"
+			st.session_state.pop("generated_scene_total", None)
+			st.session_state["scene_ready"] = True
+
+	scene_ready = st.session_state.get("scene_ready", False)
+	if scene_ready:
+		generated_path_str = st.session_state.get("generated_scene_path")
+		if generated_path_str:
+			generated_path = Path(generated_path_str)
+			if generated_path.exists():
+				scene = load_scene_safe(generated_path)
+				active_source = st.session_state.get("generated_scene_label", "Generated scene")
+				display_total_carbon = st.session_state.get("generated_scene_total")
 
 	with col_view:
 		st.subheader("3D Visualization & Analytics")
-		if scene is None:
-			st.info("No mesh scene available yet. Upload a JSON file in the chat column.")
+		if (not scene_ready) or scene is None:
+			st.info("Visualization will appear after you submit a prompt and the latest JSON output is ready.")
 			return
 		st.caption(f"Source: {active_source}")
+		if display_total_carbon is not None:
+			st.metric("Total Embodied Carbon", f"{display_total_carbon:,.2f}")
 		viewer = MeshViewer(scene, color_by="auto")
 		fig = viewer.build_figure()
 		st.plotly_chart(fig, use_container_width=True)

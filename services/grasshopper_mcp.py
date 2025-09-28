@@ -87,10 +87,9 @@ class DirectGrasshopperClient:
                 yBaySize = float(arguments.get("yBaySize", 0))
                 storyHeight = float(arguments.get("storyHeight", 0))
                 
-                # Call the compute function directly
+                # Call the compute function directly and return structured bundle
                 result = self.compute_module.call_compute(xBaySize, yBaySize, storyHeight)
-                print(result)
-                return f"Grasshopper computation result: {result}"
+                return result
                 
             except Exception as e:
                 raise RuntimeError(f"Error calling Grasshopper compute: {str(e)}")

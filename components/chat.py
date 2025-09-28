@@ -42,7 +42,8 @@ class ChatComponent:
 .chat-msg-assistant {background:#f1f8e9; padding:0.4rem 0.6rem; margin:0 0 0.5rem 0; border-radius:4px;}
 .chat-input-container {margin-top:0.5rem; border-top:1px solid #ddd; padding-top:0.5rem; background:#fff;}
 .chat-input-container form {display:flex; gap:0.5rem;}
-.chat-input-container form div[data-baseweb="input"] {flex:1;}
+.chat-input-container form div[data-baseweb="input"],
+.chat-input-container form div[data-baseweb="textarea"] {flex:1;}
 </style>
 """,
 			unsafe_allow_html=True,
@@ -71,12 +72,17 @@ class ChatComponent:
 		# Input form stuck to bottom of column
 		st.markdown("<div class='chat-input-container'>", unsafe_allow_html=True)
 		with st.form(key="chat_form", clear_on_submit=True):
-			prompt = st.text_input("Message", placeholder="Ask GPT to analyze structures or compute with Grasshopper...")
+			prompt = st.text_area(
+				"Message",
+				placeholder="Ask GPT to analyze structures or compute with Grasshopper...",
+				height=120,
+			)
 			submitted = st.form_submit_button("Send", use_container_width=True)
 		st.markdown("</div>", unsafe_allow_html=True)
 
 		if submitted and prompt.strip():
 			self.append("user", prompt.strip())
+			st.session_state["scene_ready"] = False
 			# Pass conversation history for better context
 			response = self.client.send_message(prompt.strip(), conversation_history=self.history[:-1])  # Exclude the just-added user message
 			self.append("assistant", response)
