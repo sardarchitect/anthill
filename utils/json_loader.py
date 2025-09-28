@@ -1,12 +1,13 @@
-"""Utilities to parse Three.js-style geometry JSON into domain models."""
+"""Utilities to parse geometry JSON into domain models."""
 
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from models.mesh import Vertex, MeshGeometry, MeshScene
+from models.mesh import Vertex, MeshGeometry, MeshScene, BeamGeometry
 
 
 class MeshParseError(RuntimeError):
@@ -21,6 +22,51 @@ def load_json(path: Path) -> Dict[str, Any]:
 		raise MeshParseError(f"File not found: {path}") from e
 	except json.JSONDecodeError as e:
 		raise MeshParseError(f"Invalid JSON: {e}") from e
+
+
+def parse_point_string(point_str: str) -> Vertex:
+	"""Parse point string like '{-37, -26, 8.666667}' into Vertex."""
+	# Remove braces and split by comma
+	clean_str = point_str.strip('{}')
+	coords = [float(x.strip()) for x in clean_str.split(',')]
+	if len(coords) != 3:
+		raise MeshParseError(f"Invalid point format: {point_str}")
+	return Vertex(coords[0], coords[1], coords[2])
+
+
+def parse_structural_frame(data: Dict[str, Any]) -> MeshScene:
+	"""Parse the new StructuralFrame format with BeamSystem."""
+	beams: List[BeamGeometry] = []
+	
+	# Check if this is the new format
+	structural_frame = data.get("StructuralFrame")
+	if structural_frame and "BeamSystem" in structural_frame:
+		beam_system = structural_frame["BeamSystem"]
+		
+		for idx, beam_data in enumerate(beam_system):
+			try:
+				# Parse start and end points
+				start_point = parse_point_string(beam_data["PointStart"])
+				end_point = parse_point_string(beam_data["PointEnd"])
+				
+				# Parse carbon emission (note: JSON uses "CarbonEmmision" - keeping as is)
+				carbon_str = beam_data.get("CarbonEmmision")
+				carbon_val = float(carbon_str) if carbon_str else None
+				
+				# Create beam geometry
+				beam = BeamGeometry(
+					name=f"Beam_{idx:03d}",
+					start_point=start_point,
+					end_point=end_point,
+					embodied_carbon=carbon_val,
+					structural_type="Beam"
+				)
+				beams.append(beam)
+				
+			except (KeyError, ValueError, TypeError) as e:
+				raise MeshParseError(f"Failed to parse beam {idx}: {e}")
+	
+	return MeshScene(meshes=[], beams=beams)
 
 
 def parse_scene(data: Dict[str, Any]) -> MeshScene:
@@ -87,5 +133,13 @@ def parse_scene(data: Dict[str, Any]) -> MeshScene:
 
 
 def load_scene(path: Path) -> MeshScene:
-	return parse_scene(load_json(path))
+	"""Load scene from JSON, auto-detecting format."""
+	data = load_json(path)
+	
+	# Check if it's the new StructuralFrame format
+	if "StructuralFrame" in data:
+		return parse_structural_frame(data)
+	else:
+		# Fall back to old Three.js format
+		return parse_scene(data)
 

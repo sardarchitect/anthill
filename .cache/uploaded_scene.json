@@ -45,7 +45,9 @@
         "visible": true,
         "castShadow": true,
         "receiveShadow": false,
-        "doubleSided": true
+        "doubleSided": true,
+        "embodiedCarbon": 100,
+        "structural_type": "Beam"
       }
     },
     {
@@ -79,7 +81,9 @@
         "visible": true,
         "castShadow": true,
         "receiveShadow": false,
-        "doubleSided": true
+        "doubleSided": true,
+        "embodiedCarbon": 400,
+        "structural_type": "Floor"
       }
     }
   ],

@@ -2,6 +2,7 @@
 import streamlit as st
 from pathlib import Path
 import json
+import pandas as pd
 from typing import Optional
 import os
 from dotenv import load_dotenv
@@ -130,13 +131,14 @@ def main():
 
 		charts = ChartsBuilder(scene)
 		if any(r.get("embodied_carbon") for r in scene.summary()):
-			with st.expander("Embodied Carbon Breakdown (Pie)", expanded=True):
-				st.caption("Grouping uses structural_type if present; otherwise falls back to name heuristics or custom mappings.")
+			# Main classifier function for consistency across all charts
+			def get_classifier():
 				# Simple manual mapping UI
 				custom_map_input = st.text_area(
 					"Custom mappings (one per line: name_fragment=Group)",
-					value="floor=Floor\nbeam=Beam",
-					height=80,
+					value="floor=Floor\nbeam=Beam\ncolumn=Column",
+					height=60,
+					key="classifier_input"
 				)
 				mapping = {}
 				for line in custom_map_input.splitlines():
@@ -162,12 +164,52 @@ def main():
 						return "Floor"
 					if any(k in name_l for k in ("beam", "girder")):
 						return "Beam"
+					if any(k in name_l for k in ("column", "pillar", "post")):
+						return "Column"
 					return "Other"
+				
+				return classifier
 
+			classifier = get_classifier()
+
+			# KPI Dashboard - Most Important Overview
+			with st.expander("📊 Carbon Analytics Dashboard", expanded=True):
+				st.caption("Comprehensive carbon footprint analysis with key performance indicators")
+				kpi_fig = charts.carbon_kpi_dashboard(classifier=classifier)
+				st.plotly_chart(kpi_fig, use_container_width=True)
+
+			# Aggregation Analysis
+			with st.expander("📈 Carbon Aggregation by Structure Type", expanded=True):
+				st.caption("Total carbon emissions grouped by structural elements (beams, floors, columns)")
+				agg_fig = charts.carbon_aggregation_summary(classifier=classifier)
+				st.plotly_chart(agg_fig, use_container_width=True)
+
+			# Traditional Pie Chart (kept as requested)
+			with st.expander("🥧 Carbon Distribution (Pie Chart)", expanded=True):
+				st.caption("Traditional pie chart breakdown by structural type")
 				pie = charts.carbon_pie(classifier=classifier)
-				if st.checkbox("Show classification debug table", value=False):
-					st.dataframe(charts.scene.summary())
 				st.plotly_chart(pie, use_container_width=True)
+
+			# Carbon Efficiency Analysis
+			with st.expander("⚡ Carbon Intensity Analysis", expanded=False):
+				st.caption("Carbon efficiency: emissions per unit length - identifies high-impact elements")
+				intensity_fig = charts.carbon_intensity_analysis(classifier=classifier)
+				st.plotly_chart(intensity_fig, use_container_width=True)
+
+			# Spatial Analysis
+			with st.expander("🏢 Carbon by Floor Level", expanded=False):
+				st.caption("Vertical distribution of carbon emissions across building levels")
+				floor_fig = charts.carbon_by_floor_level()
+				st.plotly_chart(floor_fig, use_container_width=True)
+
+			# Debug Information
+			if st.checkbox("Show detailed element data", value=False):
+				st.subheader("Element Classification Debug")
+				summary_df = pd.DataFrame(scene.summary())
+				if not summary_df.empty and 'embodied_carbon' in summary_df.columns:
+					# Add classifier results for debugging
+					summary_df['classified_type'] = summary_df.apply(classifier, axis=1)
+					st.dataframe(summary_df)
 
 
 if __name__ == "__main__":
