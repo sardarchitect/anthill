@@ -77,10 +77,12 @@ class MeshViewer:
 	def __init__(self, scene: MeshScene, color_by: str = "auto"):
 		self.scene = scene
 		self.color_by = color_by
-		# Collect carbon values from both meshes and beams
+		# Collect carbon values from all element types for consistent coloring
 		mesh_carbon_values = [m.embodied_carbon for m in scene.meshes if m.embodied_carbon is not None]
 		beam_carbon_values = [b.embodied_carbon for b in scene.beams if b.embodied_carbon is not None]
-		self._carbon_values = mesh_carbon_values + beam_carbon_values
+		column_carbon_values = [c.embodied_carbon for c in scene.columns if c.embodied_carbon is not None]
+		slab_carbon_values = [s.embodied_carbon for s in scene.slabs if s.embodied_carbon is not None]
+		self._carbon_values = mesh_carbon_values + beam_carbon_values + column_carbon_values + slab_carbon_values
 
 	def _carbon_active(self) -> bool:
 		if self.color_by == "embodied_carbon":
@@ -92,7 +94,12 @@ class MeshViewer:
 	def build_figure(self) -> go.Figure:
 		fig = go.Figure()
 		carbon_mode = self._carbon_active()
-		total_elements = len(self.scene.meshes) + len(self.scene.beams)
+		total_elements = (
+			len(self.scene.meshes)
+			+ len(self.scene.beams)
+			+ len(self.scene.columns)
+			+ len(self.scene.slabs)
+		)
 		colors = _color_gen(total_elements) if not carbon_mode else None
 		cmin = cmax = None
 		colorscale = None
@@ -192,6 +199,94 @@ class MeshViewer:
 					showlegend=False  # Too many beams would clutter legend
 				)
 			)
+			color_idx += 1
+
+		# Render column geometries (as vertical lines)
+		for column in self.scene.columns:
+			x_coords = [column.start_point.x, column.end_point.x]
+			y_coords = [column.start_point.y, column.end_point.y]
+			z_coords = [column.start_point.z, column.end_point.z]
+
+			if carbon_mode and column.embodied_carbon is not None:
+				line_color = _get_carbon_color(column.embodied_carbon, cmin, cmax)
+				hover_text = (
+					f"{column.name}<br>EC: {column.embodied_carbon:.2f}<br>Length: {column.length():.2f}"
+				)
+			else:
+				line_color = colors[color_idx] if colors else "#444444"
+				hover_text = f"{column.name}<br>Length: {column.length():.2f}"
+
+			fig.add_trace(
+				go.Scatter3d(
+					x=x_coords,
+					y=y_coords,
+					z=z_coords,
+					mode='lines',
+					name=column.name,
+					line=dict(
+						color=line_color,
+						width=10
+					),
+					hovertext=hover_text,
+					hoverinfo="text",
+					showlegend=False
+				)
+			)
+			color_idx += 1
+
+		# Render slab geometries as filled planes
+		for slab in self.scene.slabs:
+			if not slab.corners:
+				continue
+			xs = [v.x for v in slab.corners]
+			ys = [v.y for v in slab.corners]
+			zs = [v.z for v in slab.corners]
+			triangles = []
+			for tri_idx in range(1, len(slab.corners) - 1):
+				triangles.append((0, tri_idx, tri_idx + 1))
+			i_idx = [tri[0] for tri in triangles]
+			j_idx = [tri[1] for tri in triangles]
+			k_idx = [tri[2] for tri in triangles]
+
+			common_kwargs = dict(
+				x=xs,
+				y=ys,
+				z=zs,
+				i=i_idx,
+				j=j_idx,
+				k=k_idx,
+				name=slab.name,
+				opacity=0.45,
+				flatshading=True,
+			)
+
+			if carbon_mode and slab.embodied_carbon is not None:
+				intensity_val = slab.embodied_carbon
+				hover_text = (
+					f"{slab.name}<br>EC: {slab.embodied_carbon:.2f}<br>Area: {slab.area():.2f}"
+				)
+				fig.add_trace(
+					go.Mesh3d(
+						**common_kwargs,
+						intensity=[intensity_val] * len(xs),
+						colorscale=colorscale,
+						cmin=cmin,
+						cmax=cmax,
+						showscale=False,
+						hovertext=hover_text,
+						hoverinfo="text",
+					)
+				)
+			else:
+				hover_text = f"{slab.name}<br>Area: {slab.area():.2f}"
+				fig.add_trace(
+					go.Mesh3d(
+						**common_kwargs,
+						color=colors[color_idx] if colors else "rgba(100,149,237,0.65)",
+						hovertext=hover_text,
+						hoverinfo="text",
+					)
+				)
 			color_idx += 1
 
 		fig.update_layout(

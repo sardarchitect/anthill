@@ -7,7 +7,13 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from models.mesh import Vertex, MeshGeometry, MeshScene, BeamGeometry
+from models.mesh import (
+	Vertex,
+	MeshGeometry,
+	MeshScene,
+	BeamGeometry,
+	SlabGeometry,
+)
 
 
 class MeshParseError(RuntimeError):
@@ -34,39 +40,144 @@ def parse_point_string(point_str: str) -> Vertex:
 	return Vertex(coords[0], coords[1], coords[2])
 
 
-def parse_structural_frame(data: Dict[str, Any]) -> MeshScene:
-	"""Parse the new StructuralFrame format with BeamSystem."""
-	beams: List[BeamGeometry] = []
-	
-	# Check if this is the new format
-	structural_frame = data.get("StructuralFrame")
-	if structural_frame and "BeamSystem" in structural_frame:
-		beam_system = structural_frame["BeamSystem"]
-		
-		for idx, beam_data in enumerate(beam_system):
-			try:
-				# Parse start and end points
-				start_point = parse_point_string(beam_data["PointStart"])
-				end_point = parse_point_string(beam_data["PointEnd"])
-				
-				# Parse carbon emission (note: JSON uses "CarbonEmmision" - keeping as is)
-				carbon_str = beam_data.get("CarbonEmmision")
-				carbon_val = float(carbon_str) if carbon_str else None
-				
-				# Create beam geometry
-				beam = BeamGeometry(
-					name=f"Beam_{idx:03d}",
+def _parse_carbon(value: Any) -> float | None:
+	if value is None:
+		return None
+	try:
+		return float(value)
+	except (TypeError, ValueError):
+		return None
+
+
+def _extract_system_payload(system_data: Any) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+	"""Normalize system payload containing element list plus metadata."""
+	elements: List[Dict[str, Any]] = []
+	meta: Dict[str, Any] = {}
+	if isinstance(system_data, list):
+		for item in system_data:
+			if isinstance(item, list):
+				elements.extend([elem for elem in item if isinstance(elem, dict)])
+			elif isinstance(item, dict):
+				meta.update(item)
+	elif isinstance(system_data, dict):
+		elements_payload = system_data.get("elements")
+		if isinstance(elements_payload, list):
+			elements.extend([elem for elem in elements_payload if isinstance(elem, dict)])
+		meta.update({k: v for k, v in system_data.items() if k != "elements"})
+	return elements, meta
+
+
+def _merge_metadata(target: Dict[str, Any], source: Dict[str, Any]) -> None:
+	for key, value in source.items():
+		if isinstance(value, (int, float)):
+			target[key] = value
+		elif isinstance(value, str) and key.lower().endswith("co2"):
+			target[key] = _parse_carbon(value)
+		else:
+			target[key] = value
+
+
+def _parse_linear_elements(
+	system_data: Any,
+	element_prefix: str,
+	structural_type: str,
+	start_key: str = "PointStart",
+	end_key: str = "PointEnd",
+) -> Tuple[List[BeamGeometry], Dict[str, Any]]:
+	elements_payload, meta = _extract_system_payload(system_data)
+	linear_elements: List[BeamGeometry] = []
+	for idx, elem in enumerate(elements_payload):
+		try:
+			start_raw = elem.get(start_key)
+			end_raw = elem.get(end_key)
+			if start_raw is None or end_raw is None:
+				raise MeshParseError(f"Missing start/end point in element {idx}")
+			start_point = parse_point_string(start_raw)
+			end_point = parse_point_string(end_raw)
+			carbon_val = _parse_carbon(elem.get("CarbonEmission") or elem.get("CarbonEmmision"))
+			linear_elements.append(
+				BeamGeometry(
+					name=f"{element_prefix}_{idx:03d}",
 					start_point=start_point,
 					end_point=end_point,
 					embodied_carbon=carbon_val,
-					structural_type="Beam"
+					structural_type=structural_type,
+					meta={k: str(v) for k, v in elem.items() if k not in {start_key, end_key, "CarbonEmission", "CarbonEmmision"}}
 				)
-				beams.append(beam)
-				
-			except (KeyError, ValueError, TypeError) as e:
-				raise MeshParseError(f"Failed to parse beam {idx}: {e}")
-	
-	return MeshScene(meshes=[], beams=beams)
+			)
+		except (ValueError, TypeError) as e:
+			raise MeshParseError(f"Failed to parse {structural_type.lower()} {idx}: {e}")
+	return linear_elements, meta
+
+
+def _parse_slab_system(system_data: Any, element_prefix: str = "Slab") -> Tuple[List[SlabGeometry], Dict[str, Any]]:
+	elements_payload, meta = _extract_system_payload(system_data)
+	slabs: List[SlabGeometry] = []
+	for idx, elem in enumerate(elements_payload):
+		corner_keys = [k for k in elem.keys() if k.lower().startswith("point")]
+		if not corner_keys:
+			raise MeshParseError(f"Slab {idx} missing corner points")
+		# Sort corners by numeric suffix to preserve order (Point1, Point2, ...)
+		corner_keys.sort(key=lambda k: int(''.join(filter(str.isdigit, k)) or 0))
+		corners = [parse_point_string(elem[k]) for k in corner_keys]
+		carbon_val = _parse_carbon(elem.get("CarbonEmission") or elem.get("CarbonEmmision"))
+		slabs.append(
+			SlabGeometry(
+				name=f"{element_prefix}_{idx:03d}",
+				corners=corners,
+				embodied_carbon=carbon_val,
+				structural_type="Floor",
+				meta={k: str(v) for k, v in elem.items() if k not in corner_keys + ["CarbonEmission", "CarbonEmmision"]}
+			)
+		)
+	return slabs, meta
+
+
+def parse_structural_frame(data: Dict[str, Any]) -> MeshScene:
+	"""Parse StructuralFrame payloads (beams, columns, slabs)."""
+	structural_frame = data.get("StructuralFrame")
+	if structural_frame is None:
+		return MeshScene()
+
+	beams: List[BeamGeometry] = []
+	columns: List[BeamGeometry] = []
+	slabs: List[SlabGeometry] = []
+	metadata: Dict[str, Any] = {}
+
+	# Support both dict and list variants
+	if isinstance(structural_frame, dict):
+		if "BeamSystem" in structural_frame:
+			parsed_beams, beam_meta = _parse_linear_elements(structural_frame["BeamSystem"], "Beam", "Beam")
+			beams.extend(parsed_beams)
+			_merge_metadata(metadata, beam_meta)
+		if "ColumnSystem" in structural_frame:
+			parsed_columns, column_meta = _parse_linear_elements(structural_frame["ColumnSystem"], "Column", "Column")
+			columns.extend(parsed_columns)
+			_merge_metadata(metadata, column_meta)
+		if "SlabSystem" in structural_frame:
+			parsed_slabs, slab_meta = _parse_slab_system(structural_frame["SlabSystem"], element_prefix="Floor")
+			slabs.extend(parsed_slabs)
+			_merge_metadata(metadata, slab_meta)
+	else:
+		for entry in structural_frame:
+			if not isinstance(entry, dict):
+				continue
+			if "BeamSystem" in entry:
+				parsed_beams, beam_meta = _parse_linear_elements(entry["BeamSystem"], "Beam", "Beam")
+				beams.extend(parsed_beams)
+				_merge_metadata(metadata, beam_meta)
+			if "ColumnSystem" in entry:
+				parsed_columns, column_meta = _parse_linear_elements(entry["ColumnSystem"], "Column", "Column")
+				columns.extend(parsed_columns)
+				_merge_metadata(metadata, column_meta)
+			if "SlabSystem" in entry:
+				parsed_slabs, slab_meta = _parse_slab_system(entry["SlabSystem"], element_prefix="Floor")
+				slabs.extend(parsed_slabs)
+				_merge_metadata(metadata, slab_meta)
+			if "TotalCO2" in entry:
+				metadata["totalCO2"] = _parse_carbon(entry.get("TotalCO2"))
+
+	return MeshScene(meshes=[], beams=beams, columns=columns, slabs=slabs, metadata=metadata)
 
 
 def parse_scene(data: Dict[str, Any]) -> MeshScene:

@@ -1,401 +1,820 @@
 {
-  "StructuralFrame": {
-    "BeamSystem": [
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, -26, 8.666667}",
-        "PointEnd": "{-23.333333, -26, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, -26, 8.666667}",
-        "PointEnd": "{-9.666667, -26, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, -26, 8.666667}",
-        "PointEnd": "{4, -26, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, -26, 8.666667}",
-        "PointEnd": "{-37, -12.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, -12.75, 8.666667}",
-        "PointEnd": "{-37, 0.5, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, 0.5, 8.666667}",
-        "PointEnd": "{-37, 13.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, 13.75, 8.666667}",
-        "PointEnd": "{-37, 27, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, -12.75, 8.666667}",
-        "PointEnd": "{-23.333333, -12.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, -12.75, 8.666667}",
-        "PointEnd": "{-9.666667, -12.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, -12.75, 8.666667}",
-        "PointEnd": "{4, -12.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, -26, 8.666667}",
-        "PointEnd": "{-23.333333, -12.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, -12.75, 8.666667}",
-        "PointEnd": "{-23.333333, 0.5, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, 0.5, 8.666667}",
-        "PointEnd": "{-23.333333, 13.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, 13.75, 8.666667}",
-        "PointEnd": "{-23.333333, 27, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, 0.5, 8.666667}",
-        "PointEnd": "{-23.333333, 0.5, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, 0.5, 8.666667}",
-        "PointEnd": "{-9.666667, 0.5, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, 0.5, 8.666667}",
-        "PointEnd": "{4, 0.5, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-9.666667, -26, 8.666667}",
-        "PointEnd": "{-9.666667, -12.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-9.666667, -12.75, 8.666667}",
-        "PointEnd": "{-9.666667, 0.5, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-9.666667, 0.5, 8.666667}",
-        "PointEnd": "{-9.666667, 13.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-9.666667, 13.75, 8.666667}",
-        "PointEnd": "{-9.666667, 27, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, 13.75, 8.666667}",
-        "PointEnd": "{-23.333333, 13.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, 13.75, 8.666667}",
-        "PointEnd": "{-9.666667, 13.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, 13.75, 8.666667}",
-        "PointEnd": "{4, 13.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{4, -26, 8.666667}",
-        "PointEnd": "{4, -12.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{4, -12.75, 8.666667}",
-        "PointEnd": "{4, 0.5, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{4, 0.5, 8.666667}",
-        "PointEnd": "{4, 13.75, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{4, 13.75, 8.666667}",
-        "PointEnd": "{4, 27, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, 27, 8.666667}",
-        "PointEnd": "{-23.333333, 27, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, 27, 8.666667}",
-        "PointEnd": "{-9.666667, 27, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, 27, 8.666667}",
-        "PointEnd": "{4, 27, 8.666667}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, -26, 17.333333}",
-        "PointEnd": "{-23.333333, -26, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, -26, 17.333333}",
-        "PointEnd": "{-9.666667, -26, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, -26, 17.333333}",
-        "PointEnd": "{4, -26, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, -26, 17.333333}",
-        "PointEnd": "{-37, -12.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, -12.75, 17.333333}",
-        "PointEnd": "{-37, 0.5, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, 0.5, 17.333333}",
-        "PointEnd": "{-37, 13.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, 13.75, 17.333333}",
-        "PointEnd": "{-37, 27, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, -12.75, 17.333333}",
-        "PointEnd": "{-23.333333, -12.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, -12.75, 17.333333}",
-        "PointEnd": "{-9.666667, -12.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, -12.75, 17.333333}",
-        "PointEnd": "{4, -12.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, -26, 17.333333}",
-        "PointEnd": "{-23.333333, -12.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, -12.75, 17.333333}",
-        "PointEnd": "{-23.333333, 0.5, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, 0.5, 17.333333}",
-        "PointEnd": "{-23.333333, 13.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, 13.75, 17.333333}",
-        "PointEnd": "{-23.333333, 27, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, 0.5, 17.333333}",
-        "PointEnd": "{-23.333333, 0.5, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, 0.5, 17.333333}",
-        "PointEnd": "{-9.666667, 0.5, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, 0.5, 17.333333}",
-        "PointEnd": "{4, 0.5, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-9.666667, -26, 17.333333}",
-        "PointEnd": "{-9.666667, -12.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-9.666667, -12.75, 17.333333}",
-        "PointEnd": "{-9.666667, 0.5, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-9.666667, 0.5, 17.333333}",
-        "PointEnd": "{-9.666667, 13.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-9.666667, 13.75, 17.333333}",
-        "PointEnd": "{-9.666667, 27, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, 13.75, 17.333333}",
-        "PointEnd": "{-23.333333, 13.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, 13.75, 17.333333}",
-        "PointEnd": "{-9.666667, 13.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, 13.75, 17.333333}",
-        "PointEnd": "{4, 13.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{4, -26, 17.333333}",
-        "PointEnd": "{4, -12.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{4, -12.75, 17.333333}",
-        "PointEnd": "{4, 0.5, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{4, 0.5, 17.333333}",
-        "PointEnd": "{4, 13.75, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{4, 13.75, 17.333333}",
-        "PointEnd": "{4, 27, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, 27, 17.333333}",
-        "PointEnd": "{-23.333333, 27, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, 27, 17.333333}",
-        "PointEnd": "{-9.666667, 27, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, 27, 17.333333}",
-        "PointEnd": "{4, 27, 17.333333}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, -26, 26}",
-        "PointEnd": "{-23.333333, -26, 26}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, -26, 26}",
-        "PointEnd": "{-9.666667, -26, 26}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, -26, 26}",
-        "PointEnd": "{4, -26, 26}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, -26, 26}",
-        "PointEnd": "{-37, -12.75, 26}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, -12.75, 26}",
-        "PointEnd": "{-37, 0.5, 26}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, 0.5, 26}",
-        "PointEnd": "{-37, 13.75, 26}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-37, 13.75, 26}",
-        "PointEnd": "{-37, 27, 26}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, -12.75, 26}",
-        "PointEnd": "{-23.333333, -12.75, 26}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, -12.75, 26}",
-        "PointEnd": "{-9.666667, -12.75, 26}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, -12.75, 26}",
-        "PointEnd": "{4, -12.75, 26}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, -26, 26}",
-        "PointEnd": "{-23.333333, -12.75, 26}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, -12.75, 26}",
-        "PointEnd": "{-23.333333, 0.5, 26}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, 0.5, 26}",
-        "PointEnd": "{-23.333333, 13.75, 26}"
-      },
-      {
-        "CarbonEmmision": "1817.37",
-        "PointStart": "{-23.333333, 13.75, 26}",
-        "PointEnd": "{-23.333333, 27, 26}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-37, 0.5, 26}",
-        "PointEnd": "{-23.333333, 0.5, 26}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-23.333333, 0.5, 26}",
-        "PointEnd": "{-9.666667, 0.5, 26}"
-      },
-      {
-        "CarbonEmmision": "1874.52",
-        "PointStart": "{-9.666667, 0.5, 26}",
-        "PointEnd": "{4, 0.5, 26}"
-      }
-    ]
-  }
+  "StructuralFrame": [
+    {
+      "BeamSystem": [
+        [
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-37, -26, 8.666667}",
+            "PointEnd": "{-23.333333, -26, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-23.333333, -26, 8.666667}",
+            "PointEnd": "{-9.666667, -26, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-9.666667, -26, 8.666667}",
+            "PointEnd": "{4, -26, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, -26, 8.666667}",
+            "PointEnd": "{-37, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, -12.75, 8.666667}",
+            "PointEnd": "{-37, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, 0.5, 8.666667}",
+            "PointEnd": "{-37, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, 13.75, 8.666667}",
+            "PointEnd": "{-37, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, -12.75, 8.666667}",
+            "PointEnd": "{-23.333333, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, -12.75, 8.666667}",
+            "PointEnd": "{-9.666667, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, -12.75, 8.666667}",
+            "PointEnd": "{4, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, -26, 8.666667}",
+            "PointEnd": "{-23.333333, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, -12.75, 8.666667}",
+            "PointEnd": "{-23.333333, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, 0.5, 8.666667}",
+            "PointEnd": "{-23.333333, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, 13.75, 8.666667}",
+            "PointEnd": "{-23.333333, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, 0.5, 8.666667}",
+            "PointEnd": "{-23.333333, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, 0.5, 8.666667}",
+            "PointEnd": "{-9.666667, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, 0.5, 8.666667}",
+            "PointEnd": "{4, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, -26, 8.666667}",
+            "PointEnd": "{-9.666667, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, -12.75, 8.666667}",
+            "PointEnd": "{-9.666667, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, 0.5, 8.666667}",
+            "PointEnd": "{-9.666667, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, 13.75, 8.666667}",
+            "PointEnd": "{-9.666667, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, 13.75, 8.666667}",
+            "PointEnd": "{-23.333333, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, 13.75, 8.666667}",
+            "PointEnd": "{-9.666667, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, 13.75, 8.666667}",
+            "PointEnd": "{4, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, -26, 8.666667}",
+            "PointEnd": "{4, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, -12.75, 8.666667}",
+            "PointEnd": "{4, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, 0.5, 8.666667}",
+            "PointEnd": "{4, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, 13.75, 8.666667}",
+            "PointEnd": "{4, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-37, 27, 8.666667}",
+            "PointEnd": "{-23.333333, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-23.333333, 27, 8.666667}",
+            "PointEnd": "{-9.666667, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-9.666667, 27, 8.666667}",
+            "PointEnd": "{4, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-37, -26, 17.333333}",
+            "PointEnd": "{-23.333333, -26, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-23.333333, -26, 17.333333}",
+            "PointEnd": "{-9.666667, -26, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-9.666667, -26, 17.333333}",
+            "PointEnd": "{4, -26, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, -26, 17.333333}",
+            "PointEnd": "{-37, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, -12.75, 17.333333}",
+            "PointEnd": "{-37, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, 0.5, 17.333333}",
+            "PointEnd": "{-37, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, 13.75, 17.333333}",
+            "PointEnd": "{-37, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, -12.75, 17.333333}",
+            "PointEnd": "{-23.333333, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, -12.75, 17.333333}",
+            "PointEnd": "{-9.666667, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, -12.75, 17.333333}",
+            "PointEnd": "{4, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, -26, 17.333333}",
+            "PointEnd": "{-23.333333, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, -12.75, 17.333333}",
+            "PointEnd": "{-23.333333, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, 0.5, 17.333333}",
+            "PointEnd": "{-23.333333, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, 13.75, 17.333333}",
+            "PointEnd": "{-23.333333, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, 0.5, 17.333333}",
+            "PointEnd": "{-23.333333, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, 0.5, 17.333333}",
+            "PointEnd": "{-9.666667, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, 0.5, 17.333333}",
+            "PointEnd": "{4, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, -26, 17.333333}",
+            "PointEnd": "{-9.666667, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, -12.75, 17.333333}",
+            "PointEnd": "{-9.666667, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, 0.5, 17.333333}",
+            "PointEnd": "{-9.666667, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, 13.75, 17.333333}",
+            "PointEnd": "{-9.666667, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, 13.75, 17.333333}",
+            "PointEnd": "{-23.333333, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, 13.75, 17.333333}",
+            "PointEnd": "{-9.666667, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, 13.75, 17.333333}",
+            "PointEnd": "{4, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, -26, 17.333333}",
+            "PointEnd": "{4, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, -12.75, 17.333333}",
+            "PointEnd": "{4, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, 0.5, 17.333333}",
+            "PointEnd": "{4, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, 13.75, 17.333333}",
+            "PointEnd": "{4, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-37, 27, 17.333333}",
+            "PointEnd": "{-23.333333, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-23.333333, 27, 17.333333}",
+            "PointEnd": "{-9.666667, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-9.666667, 27, 17.333333}",
+            "PointEnd": "{4, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-37, -26, 26}",
+            "PointEnd": "{-23.333333, -26, 26}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-23.333333, -26, 26}",
+            "PointEnd": "{-9.666667, -26, 26}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-9.666667, -26, 26}",
+            "PointEnd": "{4, -26, 26}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, -26, 26}",
+            "PointEnd": "{-37, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, -12.75, 26}",
+            "PointEnd": "{-37, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, 0.5, 26}",
+            "PointEnd": "{-37, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{-37, 13.75, 26}",
+            "PointEnd": "{-37, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, -12.75, 26}",
+            "PointEnd": "{-23.333333, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, -12.75, 26}",
+            "PointEnd": "{-9.666667, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, -12.75, 26}",
+            "PointEnd": "{4, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, -26, 26}",
+            "PointEnd": "{-23.333333, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, -12.75, 26}",
+            "PointEnd": "{-23.333333, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, 0.5, 26}",
+            "PointEnd": "{-23.333333, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-23.333333, 13.75, 26}",
+            "PointEnd": "{-23.333333, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, 0.5, 26}",
+            "PointEnd": "{-23.333333, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, 0.5, 26}",
+            "PointEnd": "{-9.666667, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, 0.5, 26}",
+            "PointEnd": "{4, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, -26, 26}",
+            "PointEnd": "{-9.666667, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, -12.75, 26}",
+            "PointEnd": "{-9.666667, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, 0.5, 26}",
+            "PointEnd": "{-9.666667, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.213763",
+            "PointStart": "{-9.666667, 13.75, 26}",
+            "PointEnd": "{-9.666667, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-37, 13.75, 26}",
+            "PointEnd": "{-23.333333, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-23.333333, 13.75, 26}",
+            "PointEnd": "{-9.666667, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.220486",
+            "PointStart": "{-9.666667, 13.75, 26}",
+            "PointEnd": "{4, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, -26, 26}",
+            "PointEnd": "{4, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, -12.75, 26}",
+            "PointEnd": "{4, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, 0.5, 26}",
+            "PointEnd": "{4, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.141069",
+            "PointStart": "{4, 13.75, 26}",
+            "PointEnd": "{4, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-37, 27, 26}",
+            "PointEnd": "{-23.333333, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-23.333333, 27, 26}",
+            "PointEnd": "{-9.666667, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.145505",
+            "PointStart": "{-9.666667, 27, 26}",
+            "PointEnd": "{4, 27, 26}"
+          }
+        ],
+        {
+          "beamSystemCO2": "17.088162"
+        }
+      ]
+    },
+    {
+      "ColumnSystem": [
+        [
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, -26, 0}",
+            "PointEnd": "{-37, -26, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, -26, 8.666667}",
+            "PointEnd": "{-37, -26, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, -26, 17.333333}",
+            "PointEnd": "{-37, -26, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, -12.75, 0}",
+            "PointEnd": "{-37, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, -12.75, 8.666667}",
+            "PointEnd": "{-37, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, -12.75, 17.333333}",
+            "PointEnd": "{-37, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 0.5, 0}",
+            "PointEnd": "{-37, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 0.5, 8.666667}",
+            "PointEnd": "{-37, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 0.5, 17.333333}",
+            "PointEnd": "{-37, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 13.75, 0}",
+            "PointEnd": "{-37, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 13.75, 8.666667}",
+            "PointEnd": "{-37, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 13.75, 17.333333}",
+            "PointEnd": "{-37, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 27, 0}",
+            "PointEnd": "{-37, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 27, 8.666667}",
+            "PointEnd": "{-37, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-37, 27, 17.333333}",
+            "PointEnd": "{-37, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, -26, 0}",
+            "PointEnd": "{-23.333333, -26, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, -26, 8.666667}",
+            "PointEnd": "{-23.333333, -26, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, -26, 17.333333}",
+            "PointEnd": "{-23.333333, -26, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, -12.75, 0}",
+            "PointEnd": "{-23.333333, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, -12.75, 8.666667}",
+            "PointEnd": "{-23.333333, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, -12.75, 17.333333}",
+            "PointEnd": "{-23.333333, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 0.5, 0}",
+            "PointEnd": "{-23.333333, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 0.5, 8.666667}",
+            "PointEnd": "{-23.333333, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 0.5, 17.333333}",
+            "PointEnd": "{-23.333333, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 13.75, 0}",
+            "PointEnd": "{-23.333333, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 13.75, 8.666667}",
+            "PointEnd": "{-23.333333, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 13.75, 17.333333}",
+            "PointEnd": "{-23.333333, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 27, 0}",
+            "PointEnd": "{-23.333333, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 27, 8.666667}",
+            "PointEnd": "{-23.333333, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-23.333333, 27, 17.333333}",
+            "PointEnd": "{-23.333333, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, -26, 0}",
+            "PointEnd": "{-9.666667, -26, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, -26, 8.666667}",
+            "PointEnd": "{-9.666667, -26, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, -26, 17.333333}",
+            "PointEnd": "{-9.666667, -26, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, -12.75, 0}",
+            "PointEnd": "{-9.666667, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, -12.75, 8.666667}",
+            "PointEnd": "{-9.666667, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, -12.75, 17.333333}",
+            "PointEnd": "{-9.666667, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 0.5, 0}",
+            "PointEnd": "{-9.666667, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 0.5, 8.666667}",
+            "PointEnd": "{-9.666667, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 0.5, 17.333333}",
+            "PointEnd": "{-9.666667, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 13.75, 0}",
+            "PointEnd": "{-9.666667, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 13.75, 8.666667}",
+            "PointEnd": "{-9.666667, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 13.75, 17.333333}",
+            "PointEnd": "{-9.666667, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 27, 0}",
+            "PointEnd": "{-9.666667, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 27, 8.666667}",
+            "PointEnd": "{-9.666667, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{-9.666667, 27, 17.333333}",
+            "PointEnd": "{-9.666667, 27, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, -26, 0}",
+            "PointEnd": "{4, -26, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, -26, 8.666667}",
+            "PointEnd": "{4, -26, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, -26, 17.333333}",
+            "PointEnd": "{4, -26, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, -12.75, 0}",
+            "PointEnd": "{4, -12.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, -12.75, 8.666667}",
+            "PointEnd": "{4, -12.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, -12.75, 17.333333}",
+            "PointEnd": "{4, -12.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 0.5, 0}",
+            "PointEnd": "{4, 0.5, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 0.5, 8.666667}",
+            "PointEnd": "{4, 0.5, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 0.5, 17.333333}",
+            "PointEnd": "{4, 0.5, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 13.75, 0}",
+            "PointEnd": "{4, 13.75, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 13.75, 8.666667}",
+            "PointEnd": "{4, 13.75, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 13.75, 17.333333}",
+            "PointEnd": "{4, 13.75, 26}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 27, 0}",
+            "PointEnd": "{4, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 27, 8.666667}",
+            "PointEnd": "{4, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "0.044722",
+            "PointStart": "{4, 27, 17.333333}",
+            "PointEnd": "{4, 27, 26}"
+          }
+        ],
+        {
+          "colomnSystemCO2": "2.683349"
+        }
+      ]
+    },
+    {
+      "SlabSystem": [
+        {
+          "SlabSystemCO2": "200785.2"
+        },
+        [
+          {
+            "CarbonEmission": "66928.4",
+            "Point1": "{-37, -26, 8.666667}",
+            "Point2": "{4, -26, 8.666667}",
+            "Point3": "{4, 27, 8.666667}",
+            "Point4": "{-37, 27, 8.666667}"
+          },
+          {
+            "CarbonEmission": "66928.4",
+            "Point1": "{-37, -26, 17.333333}",
+            "Point2": "{4, -26, 17.333333}",
+            "Point3": "{4, 27, 17.333333}",
+            "Point4": "{-37, 27, 17.333333}"
+          },
+          {
+            "CarbonEmission": "66928.4",
+            "Point1": "{-37, -26, 26}",
+            "Point2": "{4, -26, 26}",
+            "Point3": "{4, 27, 26}",
+            "Point4": "{-37, 27, 26}"
+          }
+        ]
+      ]
+    },
+    {
+      "TotalCO2": "200804.971511"
+    }
+  ]
 }

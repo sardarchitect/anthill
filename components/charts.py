@@ -16,16 +16,12 @@ class ChartsBuilder:
 		self._summary = scene.summary()
 
 	def carbon_pie(self, classifier=None):
-		"""Return a pie chart of embodied carbon grouped by a classifier.
-
-		classifier: callable taking row dict -> group name. If None, tries to
-		infer 'Floor' vs 'Beam' by name keywords else 'Other'.
-		"""
+		"""Return a pie chart of embodied carbon grouped by a classifier."""
 		rows = [r for r in self._summary if r.get("embodied_carbon") is not None]
 		if not rows:
 			return go.Figure()
+
 		def default_classifier(r):
-			# Use explicit structural_type if provided
 			stype = r.get("structural_type")
 			if stype:
 				return stype
@@ -34,17 +30,55 @@ class ChartsBuilder:
 				return "Floor"
 			if any(k in name for k in ("beam", "girder")):
 				return "Beam"
+			if any(k in name for k in ("column", "pillar")):
+				return "Column"
 			return "Other"
+
 		classifier = classifier or default_classifier
+
 		grouped = {}
 		for r in rows:
-			g = classifier(r)
-			grouped.setdefault(g, 0.0)
-			grouped[g] += r["embodied_carbon"] or 0.0
-		data = [{"type": k, "carbon": v} for k, v in grouped.items()]
-		fig = px.pie(data, values="carbon", names="type", title="Embodied Carbon by Structural Type")
-		fig.update_traces(textposition="inside", textinfo="percent+label")
-		fig.update_layout(margin=dict(l=0, r=0, t=40, b=0))
+			group = classifier(r)
+			if group not in grouped:
+				grouped[group] = {"total_carbon": 0.0, "count": 0}
+			grouped[group]["total_carbon"] += r["embodied_carbon"] or 0.0
+			grouped[group]["count"] += 1
+
+		ordered = sorted(grouped.items(), key=lambda kv: kv[1]["total_carbon"], reverse=True)
+		labels = [label for label, _ in ordered]
+		values = [bucket["total_carbon"] for _, bucket in ordered]
+		counts = [bucket["count"] for _, bucket in ordered]
+
+		data = [{"type": label, "carbon": value, "count": count} for label, value, count in zip(labels, values, counts)]
+		fig = px.pie(
+			data,
+			values="carbon",
+			names="type",
+			title="Embodied Carbon by Structural Type",
+			hole=0.35,
+			custom_data=[counts]
+		)
+
+		if values:
+			max_val = max(values)
+			pulls = [0.0 if val == max_val else 0.12 for val in values]
+		else:
+			pulls = None
+
+		fig.update_traces(
+			textposition="inside",
+			texttemplate="%{label}<br>%{percent:.3%}",
+			hovertemplate="<b>%{label}</b><br>Carbon: %{value:.2f} kgCO₂e<extra>Elements: %{customdata[0]}</extra>",
+			pull=pulls,
+			marker=dict(line=dict(color="#222", width=1))
+		)
+		fig.update_layout(
+			margin=dict(l=0, r=0, t=40, b=0),
+			showlegend=True,
+			legend_title_text="Structural Type",
+			uniformtext_minsize=10,
+			uniformtext_mode="hide"
+		)
 		return fig
 
 	def faces_bar(self):
@@ -173,7 +207,10 @@ class ChartsBuilder:
 
 	def carbon_intensity_analysis(self, classifier=None):
 		"""Analyze carbon intensity (carbon per unit length/area)."""
-		rows = [r for r in self._summary if r.get("embodied_carbon") is not None and r.get("length") is not None]
+		rows = [
+			r for r in self._summary
+			if r.get("embodied_carbon") is not None and (r.get("length") or r.get("area"))
+		]
 		if not rows:
 			return go.Figure()
 		
@@ -194,36 +231,47 @@ class ChartsBuilder:
 		intensity_data = []
 		for r in rows:
 			group = classifier(r)
-			length = r.get('length', 1)  # Avoid division by zero
-			if length > 0:
-				intensity = r["embodied_carbon"] / length
+			dimension = r.get('length')
+			dimension_label = 'Length'
+			unit_suffix = 'kgCO2e per unit length'
+			if dimension is None or dimension == 0:
+				dimension = r.get('area')
+				dimension_label = 'Area'
+				unit_suffix = 'kgCO2e per unit area'
+			if dimension and dimension > 0:
+				intensity = r["embodied_carbon"] / dimension
+				display_type = f"{group} ({'m' if dimension_label == 'Length' else 'm²'})"
 				intensity_data.append({
 					'type': group,
+					'display_type': display_type,
 					'name': r['name'],
 					'carbon': r["embodied_carbon"],
-					'length': length,
-					'intensity': intensity
+					'dimension': dimension,
+					'dimension_type': dimension_label,
+					'intensity': intensity,
+					'unit_suffix': unit_suffix
 				})
 		
 		if not intensity_data:
 			return go.Figure()
 		
 		df = pd.DataFrame(intensity_data)
-		
+
 		fig = px.box(
 			df,
-			x='type',
+			x='display_type',
 			y='intensity',
-			title='Carbon Intensity Distribution (kgCO2e per unit length)',
-			color='type',
-			points='all'
+			title='Carbon Intensity Distribution by Element Type',
+			color='dimension_type',
+			points='all',
+			hover_data={'unit_suffix': True, 'dimension': ':.2f', 'carbon': ':.2f'}
 		)
 		
 		fig.update_layout(
-			xaxis_title='Structural Type',
-			yaxis_title='Carbon Intensity (kgCO2e/unit)',
+			xaxis_title='Structural Type (Unit Basis)',
+			yaxis_title='Carbon Intensity (kgCO2e per unit)',
 			margin=dict(l=0, r=0, t=40, b=40),
-			showlegend=False
+			legend_title='Dimension Basis'
 		)
 		
 		return fig
@@ -281,7 +329,7 @@ class ChartsBuilder:
 		rows = [r for r in self._summary if r.get("embodied_carbon") is not None]
 		if not rows:
 			return go.Figure()
-		
+
 		def default_classifier(r):
 			stype = r.get("structural_type")
 			if stype:
@@ -294,27 +342,23 @@ class ChartsBuilder:
 			if any(k in name for k in ("column", "pillar")):
 				return "Column"
 			return "Other"
-		
+
 		classifier = classifier or default_classifier
-		
-		# Calculate KPIs
+
 		total_carbon = sum(r["embodied_carbon"] for r in rows)
 		avg_carbon = total_carbon / len(rows)
 		max_carbon = max(r["embodied_carbon"] for r in rows)
 		min_carbon = min(r["embodied_carbon"] for r in rows)
-		
-		# Group statistics
+
 		grouped_stats = {}
 		for r in rows:
 			group = classifier(r)
 			if group not in grouped_stats:
 				grouped_stats[group] = []
 			grouped_stats[group].append(r["embodied_carbon"])
-		
-		# Create summary statistics visualization
+
 		fig = go.Figure()
-		
-		# Create a summary table as text
+
 		stats_by_type = []
 		for group, values in grouped_stats.items():
 			stats_by_type.append({
@@ -324,9 +368,9 @@ class ChartsBuilder:
 				'Average (kgCO2e)': f"{np.mean(values):.1f}",
 				'% of Total': f"{(sum(values)/total_carbon)*100:.1f}%"
 			})
-		
+
 		df_stats = pd.DataFrame(stats_by_type)
-		
+
 		fig.add_trace(go.Table(
 			header=dict(
 				values=list(df_stats.columns),
@@ -341,12 +385,12 @@ class ChartsBuilder:
 				font=dict(size=11)
 			)
 		))
-		
+
 		fig.update_layout(
 			title=f'Carbon Analytics Dashboard - Total: {total_carbon:.1f} kgCO2e',
 			margin=dict(l=0, r=0, t=60, b=20),
 			height=400
 		)
-		
+
 		return fig
 
