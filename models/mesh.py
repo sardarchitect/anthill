@@ -25,6 +25,34 @@ class Vertex:
 
 
 @dataclass
+class BeamGeometry:
+	"""A structural beam defined by start and end points.
+
+	Attributes
+	----------
+	name: Optional human-readable identifier.
+	start_point: Starting vertex of the beam.
+	end_point: Ending vertex of the beam.
+	embodied_carbon: Carbon emission value (kgCO2e).
+	meta: Arbitrary metadata.
+	"""
+
+	name: str
+	start_point: Vertex
+	end_point: Vertex
+	embodied_carbon: float | None = None  # kgCO2e
+	structural_type: str = "Beam"
+	meta: Dict[str, str] = field(default_factory=dict)
+
+	def length(self) -> float:
+		"""Calculate the length of the beam."""
+		dx = self.end_point.x - self.start_point.x
+		dy = self.end_point.y - self.start_point.y
+		dz = self.end_point.z - self.start_point.z
+		return math.sqrt(dx*dx + dy*dy + dz*dz)
+
+
+@dataclass
 class MeshGeometry:
 	"""A single mesh geometry (triangular).
 
@@ -64,9 +92,10 @@ class MeshGeometry:
 
 @dataclass
 class MeshScene:
-	"""Collection of MeshGeometry objects with scene-level helpers."""
+	"""Collection of MeshGeometry and BeamGeometry objects with scene-level helpers."""
 
-	meshes: List[MeshGeometry]
+	meshes: List[MeshGeometry] = field(default_factory=list)
+	beams: List[BeamGeometry] = field(default_factory=list)
 
 	def total_vertices(self) -> int:
 		return sum(m.vertex_count() for m in self.meshes)
@@ -86,6 +115,8 @@ class MeshScene:
 
 	def summary(self) -> List[Dict[str, float]]:
 		rows = []
+		
+		# Add mesh geometries
 		for m in self.meshes:
 			(minx, miny, minz), (maxx, maxy, maxz) = m.bounds()
 			rows.append(
@@ -100,6 +131,25 @@ class MeshScene:
 					"structural_type": m.structural_type
 				}
 			)
+		
+		# Add beam geometries
+		for b in self.beams:
+			min_z = min(b.start_point.z, b.end_point.z)
+			max_z = max(b.start_point.z, b.end_point.z)
+			rows.append(
+				{
+					"name": b.name,
+					"vertices": 2,  # Start and end points
+					"faces": 0,     # Beams don't have faces
+					"bbox_volume": 0,  # Line has no volume
+					"length": b.length(),
+					"min_z": min_z,
+					"max_z": max_z,
+					"embodied_carbon": b.embodied_carbon,
+					"structural_type": b.structural_type
+				}
+			)
+		
 		return rows
 
 

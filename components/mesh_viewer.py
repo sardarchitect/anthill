@@ -32,11 +32,55 @@ def _color_gen(n: int) -> List[str]:
 	return out
 
 
+def _get_carbon_color(carbon_value: float, cmin: float, cmax: float) -> str:
+	"""Get color for carbon value using smooth gradient interpolation."""
+	if cmax == cmin:
+		return '#ffff00'  # Yellow for single value
+	
+	# Normalize carbon value to 0-1 range
+	normalized = (carbon_value - cmin) / (cmax - cmin)
+	normalized = max(0, min(1, normalized))  # Clamp to [0,1]
+	
+	# Define gradient stops with more nuanced colors
+	gradient_stops = [
+		(0.0, (0, 255, 0)),      # Bright green
+		(0.15, (127, 255, 0)),   # Spring green
+		(0.3, (255, 255, 0)),    # Yellow
+		(0.5, (255, 165, 0)),    # Orange
+		(0.7, (255, 102, 0)),    # Red-orange
+		(0.85, (255, 0, 0)),     # Red
+		(1.0, (139, 0, 0))       # Dark red
+	]
+	
+	# Find the two stops to interpolate between
+	for i in range(len(gradient_stops) - 1):
+		stop1_pos, stop1_color = gradient_stops[i]
+		stop2_pos, stop2_color = gradient_stops[i + 1]
+		
+		if stop1_pos <= normalized <= stop2_pos:
+			# Interpolate between the two colors
+			if stop2_pos == stop1_pos:
+				r, g, b = stop1_color
+			else:
+				t = (normalized - stop1_pos) / (stop2_pos - stop1_pos)
+				r = int(stop1_color[0] + t * (stop2_color[0] - stop1_color[0]))
+				g = int(stop1_color[1] + t * (stop2_color[1] - stop1_color[1]))
+				b = int(stop1_color[2] + t * (stop2_color[2] - stop1_color[2]))
+			
+			return f'rgb({r}, {g}, {b})'
+	
+	# Fallback (should not reach here)
+	return f'rgb(255, 0, 0)'
+
+
 class MeshViewer:
 	def __init__(self, scene: MeshScene, color_by: str = "auto"):
 		self.scene = scene
 		self.color_by = color_by
-		self._carbon_values = [m.embodied_carbon for m in scene.meshes if m.embodied_carbon is not None]
+		# Collect carbon values from both meshes and beams
+		mesh_carbon_values = [m.embodied_carbon for m in scene.meshes if m.embodied_carbon is not None]
+		beam_carbon_values = [b.embodied_carbon for b in scene.beams if b.embodied_carbon is not None]
+		self._carbon_values = mesh_carbon_values + beam_carbon_values
 
 	def _carbon_active(self) -> bool:
 		if self.color_by == "embodied_carbon":
@@ -48,19 +92,32 @@ class MeshViewer:
 	def build_figure(self) -> go.Figure:
 		fig = go.Figure()
 		carbon_mode = self._carbon_active()
-		colors = _color_gen(len(self.scene.meshes)) if not carbon_mode else None
+		total_elements = len(self.scene.meshes) + len(self.scene.beams)
+		colors = _color_gen(total_elements) if not carbon_mode else None
 		cmin = cmax = None
 		colorscale = None
 		if carbon_mode:
-			cmin = min(self._carbon_values)
-			cmax = max(self._carbon_values)
+			cmin = min(self._carbon_values) if self._carbon_values else 0
+			cmax = max(self._carbon_values) if self._carbon_values else 1
 			if cmin == cmax:
 				# avoid zero range
 				cmin *= 0.99
 				cmax *= 1.01
-			# Reverse so low = green, high = red (intuitive danger scale)
-			colorscale = px.colors.diverging.RdYlGn[::-1]
+			# Create a sophisticated gradient from low to high carbon emissions
+			# Using a multi-stop gradient: Green -> Yellow-Green -> Yellow -> Orange -> Red -> Dark Red
+			colorscale = [
+				[0.0, '#00ff00'],    # Bright green (lowest carbon)
+				[0.15, '#7fff00'],   # Spring green
+				[0.3, '#ffff00'],    # Yellow
+				[0.5, '#ffa500'],    # Orange
+				[0.7, '#ff6600'],    # Red-orange
+				[0.85, '#ff0000'],   # Red
+				[1.0, '#8b0000']     # Dark red (highest carbon)
+			]
+		
+		color_idx = 0
 
+		# Render mesh geometries
 		for idx, mesh in enumerate(self.scene.meshes):
 			if not mesh.faces:
 				continue
@@ -88,7 +145,7 @@ class MeshViewer:
 						colorscale=colorscale,
 						cmin=cmin,
 						cmax=cmax,
-						showscale=(idx == 0),
+						showscale=(color_idx == 0),
 						colorbar=dict(title="Embodied Carbon"),
 						hovertext=f"{mesh.name}<br>EC: {intensity_val:.2f}",
 						hoverinfo="text",
@@ -98,11 +155,44 @@ class MeshViewer:
 				fig.add_trace(
 					go.Mesh3d(
 						**common_kwargs,
-						color=colors[idx] if colors else "#888888",
+						color=colors[color_idx] if colors else "#888888",
 						hovertext=f"{mesh.name}",
 						hoverinfo="text",
 					)
 				)
+			color_idx += 1
+
+		# Render beam geometries as lines
+		for idx, beam in enumerate(self.scene.beams):
+			x_coords = [beam.start_point.x, beam.end_point.x]
+			y_coords = [beam.start_point.y, beam.end_point.y]
+			z_coords = [beam.start_point.z, beam.end_point.z]
+			
+			if carbon_mode and beam.embodied_carbon is not None:
+				# Use gradient color function for smooth transitions
+				line_color = _get_carbon_color(beam.embodied_carbon, cmin, cmax)
+				hover_text = f"{beam.name}<br>EC: {beam.embodied_carbon:.2f}<br>Length: {beam.length():.2f}"
+			else:
+				line_color = colors[color_idx] if colors else "#888888"
+				hover_text = f"{beam.name}<br>Length: {beam.length():.2f}"
+			
+			fig.add_trace(
+				go.Scatter3d(
+					x=x_coords,
+					y=y_coords,
+					z=z_coords,
+					mode='lines',
+					name=beam.name,
+					line=dict(
+						color=line_color,
+						width=8
+					),
+					hovertext=hover_text,
+					hoverinfo="text",
+					showlegend=False  # Too many beams would clutter legend
+				)
+			)
+			color_idx += 1
 
 		fig.update_layout(
 			scene=dict(
@@ -115,7 +205,7 @@ class MeshViewer:
 			legend=dict(orientation="h"),
 		)
 		if carbon_mode:
-			fig.update_layout(title="3D Meshes (Colored by Embodied Carbon)")
+			fig.update_layout(title="3D Structure (Carbon Gradient: Green=Low → Red=High)")
 		return fig
 
 	@property
