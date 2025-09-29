@@ -50,11 +50,35 @@ def call_compute(xBaySize: float, yBaySize: float, storyHeight: float):
     }
     response = requests.post(COMPUTE_URL, json=payload)
     res = response.json()
-    data = res["values"][0]["InnerTree"]["{0}"][0]["data"]
-    print("Raw response data:")
-    print(data)
+    print("Full Rhino Compute response:")
+    print(json.dumps(res, indent=2))
+    
+    # Check all values in the response
+    print("\nAll values in response:")
+    for i, value in enumerate(res.get("values", [])):
+        print(f"\nValue {i}:")
+        print(json.dumps(value, indent=2))
+        
+    # Combine all JSON data from the values
+    combined_data = []
+    for value in res.get("values", []):
+        for branch in value.get("InnerTree", {}).values():
+            for item in branch:
+                try:
+                    # Try to parse each item's data as JSON
+                    item_data = json.loads(item.get("data", "null"))
+                    if item_data is not None:
+                        combined_data.append(item_data)
+                except json.JSONDecodeError:
+                    print(f"Skipping non-JSON data: {item.get('data')}")
+                    continue
+    
+    # Now create a proper StructuralFrame wrapper
+    data = {"StructuralFrame": combined_data}
+    print("\nCombined data structure:")
+    print(json.dumps(data, indent=2))
     try:
-        parsed = json.loads(data)
+        parsed = data  # Already in dictionary form
         print("\nFull Grasshopper data structure:")
         print(json.dumps(parsed, indent=2))
         print("\nStructure analysis:")

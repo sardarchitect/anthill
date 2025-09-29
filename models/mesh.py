@@ -138,14 +138,21 @@ class MeshScene:
                 print(f"System data content: {json.dumps(system_data, indent=2)}")
             
             elements = []
-            # For slabs, handle the special case where the system is an array with metrics object first
-            if element_type == "Slab" and isinstance(system_data, list):
+            # For slabs and columns, handle nested array structures
+            if element_type in ["Slab", "Column"] and isinstance(system_data, list):
+                print(f"Processing {element_type} with system_data: {json.dumps(system_data, indent=2)}")
                 for item in system_data:
                     if isinstance(item, list):
-                        for slab in item:  # Process individual slabs in the nested list
-                            if isinstance(slab, dict) and all(f"Point{i}" in slab for i in range(1, 5)):
-                                elements.append(slab)
-            # For beams and columns, handle the single level of nesting
+                        if element_type == "Column":
+                            # Look for column elements with PointStart/PointEnd
+                            for col in item:
+                                if isinstance(col, dict) and "PointStart" in col and "PointEnd" in col:
+                                    elements.append(col)
+                        else:  # Slabs need point validation
+                            for slab in item:
+                                if isinstance(slab, dict) and all(f"Point{i}" in slab for i in range(1, 5)):
+                                    elements.append(slab)
+            # For beams, handle single level nesting
             elif isinstance(system_data, list):
                 for item in system_data:
                     if isinstance(item, list):
@@ -159,18 +166,39 @@ class MeshScene:
 
         # Process StructuralFrame data if present
         print("\nProcessing structural frame data...")
-        frame_data = data
+        frame_data = {}
+        
         if isinstance(data, dict) and "StructuralFrame" in data:
             print("Found StructuralFrame key in data")
-            print(f"StructuralFrame full content: {json.dumps(data['StructuralFrame'], indent=2)}")
-            frame_data = {}  # Create a combined frame data dictionary
-            if isinstance(data["StructuralFrame"], list):
-                print("StructuralFrame is a list, processing all dict items...")
-                for item in data["StructuralFrame"]:
-                    print(f"Examining item type: {type(item)}")
-                    if isinstance(item, dict):
-                        print(f"Found dictionary item with keys: {list(item.keys())}")
-                        # Combine all systems into one dictionary
+            
+            # Handle either a list of strings or direct dictionary data
+            struct_frame = data["StructuralFrame"]
+            
+            if isinstance(struct_frame, list):
+                print("StructuralFrame is a list, processing items...")
+                for item in struct_frame:
+                    if isinstance(item, str):
+                        try:
+                            # Parse JSON string from Grasshopper
+                            parsed_item = json.loads(item)
+                            if "StructuralFrame" in parsed_item:
+                                # Process each system in the parsed data
+                                for struct_item in parsed_item["StructuralFrame"]:
+                                    if isinstance(struct_item, dict):
+                                        if "BeamSystem" in struct_item:
+                                            print("Found BeamSystem")
+                                            frame_data["BeamSystem"] = struct_item["BeamSystem"]
+                                        if "ColumnSystem" in struct_item:
+                                            print("Found ColumnSystem")
+                                            frame_data["ColumnSystem"] = struct_item["ColumnSystem"]
+                                        if "SlabSystem" in struct_item:
+                                            print("Found SlabSystem")
+                                            frame_data["SlabSystem"] = struct_item["SlabSystem"]
+                        except json.JSONDecodeError as e:
+                            print(f"Error parsing JSON string: {e}")
+                            continue
+                    elif isinstance(item, dict):
+                        # Handle direct dictionary items
                         if "BeamSystem" in item:
                             print("Found BeamSystem")
                             frame_data["BeamSystem"] = item["BeamSystem"]
@@ -181,12 +209,14 @@ class MeshScene:
                             print("Found SlabSystem")
                             frame_data["SlabSystem"] = item["SlabSystem"]
             else:
-                frame_data = data["StructuralFrame"]
-                print(f"StructuralFrame is not a list. Type: {type(frame_data)}")
-                if isinstance(frame_data, dict):
-                    print(f"Frame data keys: {list(frame_data.keys())}")
+                # Handle non-list StructuralFrame data
+                frame_data = struct_frame
+                print(f"Using direct StructuralFrame data: {type(frame_data)}")
         else:
-            print("No StructuralFrame key found in data")        # Process beams
+            print("No StructuralFrame key found in data")
+            
+        print("\nProcessed frame data:")
+        print(json.dumps(frame_data, indent=2))        # Process beams
         if isinstance(frame_data, dict) and "BeamSystem" in frame_data:
             beam_system = process_structural_elements(frame_data["BeamSystem"], "Beam")
             for beam_data in beam_system:
@@ -219,9 +249,20 @@ class MeshScene:
 
         # Process columns - these should be vertical segments
         print("\nProcessing column system...")
+        column_system = []  # Initialize empty list
         if isinstance(frame_data, dict) and "ColumnSystem" in frame_data:
             print(f"Found ColumnSystem in frame_data")
-            column_system = process_structural_elements(frame_data["ColumnSystem"], "Column")
+            print(f"Raw ColumnSystem data: {json.dumps(frame_data['ColumnSystem'], indent=2)}")
+            # Handle the same nested list structure as slabs
+            if isinstance(frame_data["ColumnSystem"], list):
+                for item in frame_data["ColumnSystem"]:
+                    if isinstance(item, list):
+                        column_system = process_structural_elements([item], "Column")  # Pass as single-item list
+                        print(f"Found {len(column_system)} columns in nested list")
+                        break  # Found the column data, no need to continue
+                    elif isinstance(item, dict) and any(key.startswith("Point") for key in item.keys()):
+                        column_system = process_structural_elements([item], "Column")  # Try direct processing
+                        print(f"Found {len(column_system)} columns in direct dict")
             for column_data in column_system:
                 if not isinstance(column_data, dict):
                     print(f"Skipping non-dict column data: {type(column_data)}")
